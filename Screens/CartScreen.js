@@ -1,5 +1,5 @@
     import React, { useState, useEffect } from 'react';
-    import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
+    import { View, Text, FlatList, Button, StyleSheet, SafeAreaView } from 'react-native';
     import AsyncStorage from '@react-native-async-storage/async-storage';
 
     export default function CartScreen() {
@@ -22,19 +22,19 @@
     };
 
     return (
-        <View style={styles.container}>
-        <Text style={styles.header}>Cart</Text>
-        <FlatList
-            data={cart}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-            <View style={styles.product}>
-                <Text>{item.name} - ${item.price}</Text>
-                <Button title="Remove" onPress={() => removeFromCart(item.id)} />
+            <View style={styles.container}>
+            <Text style={styles.header}>Cart</Text>
+            <FlatList
+                data={cart}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                <View style={styles.product} key={item.id}>
+                    <Text>{item.name} - ${item.price}</Text>
+                    <Button title="Remove" onPress={() => removeFromCart(item.id)} />
+                </View>
+                )}
+            />
             </View>
-            )}
-        />
-        </View>
     );
     }
 
