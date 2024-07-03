@@ -1,21 +1,49 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+
+
 import { StyleSheet, Text, View, SafeAreaView, 
     Image, TouchableOpacity, FlatList } from 'react-native'
-import { Ionicons } from '@expo/vector-icons';
+
 import ProductsCard from './ProductsCard';
+import { Ionicons } from '@expo/vector-icons';
+const data = require('../Data/data.json');
+
     const HomeScreen = () => {
+        const [products, setProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(false); 
+
+    const handleError = (error) => {
+        console.error('Error loading data:', error);
+            
+        };
+
+    useEffect(() => {
+        const getData = async () => {
+        setIsLoading(true);
+        try {
+            setProducts(data.products);
+        } catch (error) {
+            handleError(error);
+        } finally {
+            setIsLoading(false);
+        }
+        };
+        getData();
+    }, []);
+    
     return (
         <SafeAreaView style={styles.container}>
             <FlatList 
             numColumns={2}
             ListHeaderComponent={
+                
                 <>
                 <View style={styles.navBar}>
-                    <Image style={styles.menuIcon} source={require('../assets/Menu.png')} />
-                    <Image style={styles.logoText} source={require('../assets/Logo.png')} />
-                    <Image style={styles.searchIcon} source={require('../assets/Search.png')} />
+                    <Image style={styles.menuIcon} source={require('../assets/Images/Menu.png')} />
+                    <Image style={styles.logoText} source={require('../assets/Images/Logo.png')} />
+                    <Image style={styles.searchIcon} source={require('../assets/Images/Search.png')} />
                     <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
-                        <Image style={styles.shoppingBagIcon} source={require('../assets/shoppingBag.png')} />
+                        <Image style={styles.shoppingBagIcon} source={require('../assets/Images/shoppingBag.png')} />
                     </TouchableOpacity>
                     </View>
                     <View style={styles.sectionTwo}>
@@ -27,16 +55,23 @@ import ProductsCard from './ProductsCard';
                         <Ionicons style={styles.filterIcon} name="filter" size={20} color="#FA908A" />
                     </View>
                 </View>
+                
                 </>
             }
-            data={[1,2,3,4,5,6,7,8]} renderItem={({item}) => <ProductsCard />} 
+            data={products}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+                <ProductsCard
+                product={item}
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+                handleError={handleError}
+                />
+            )}
             showsVerticalScrollIndicator={false}
             />
-            {/* <View style={styles.ProductsCardContainer}>
-                < ProductsCard />
-                < ProductsCard />
-            </View> */}
         </SafeAreaView>
+        
     )
     }
 
