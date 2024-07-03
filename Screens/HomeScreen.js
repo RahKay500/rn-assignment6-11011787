@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-
-
 import { StyleSheet, Text, View, SafeAreaView, 
     Image, TouchableOpacity, FlatList } from 'react-native'
-
+import { useNavigation } from '@react-navigation/native';
 import ProductsCard from './ProductsCard';
 import { Ionicons } from '@expo/vector-icons';
 const data = require('../Data/data.json');
 
     const HomeScreen = () => {
-        const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(false); 
+    const navigation = useNavigation();
 
     const handleError = (error) => {
         console.error('Error loading data:', error);

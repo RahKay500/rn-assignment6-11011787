@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CartContext } from '../src/context/CartContext';
+
 import dress1 from '../assets/Images/dress1.png';
 import dress2 from '../assets/Images/dress2.png';
 import dress3 from '../assets/Images/dress3.png';
@@ -9,26 +12,47 @@ import dress6 from '../assets/Images/dress6.png';
 import dress7 from '../assets/Images/dress7.png';
 
 
-
     const ProductsCard = ({ product, isLoading, setIsLoading, handleError }) => {
-       
+        const { addToCart } = useContext(CartContext);
+
+        const [cart, setCart] = useState([]);
+        useEffect(() => {
+            const loadCart = async () => {
+            const storedCart = await AsyncStorage.getItem('cart');
+            if (storedCart) {
+                setCart(JSON.parse(storedCart));
+            }
+            };
+            loadCart();
+        }, []);
+    
+        const handleAddToCart = async (product) => {
+            const newCart = [...cart, product];
+            setCart(newCart);
+            await AsyncStorage.setItem('cart', JSON.stringify(newCart));
+            addToCart(product);
+        };
+    
+
         return (
             <View style={styles.dressContainer}>
-            <Image
-                source={getImageSource(product.image)}
-                style={styles.dress}
-                onError={handleError}
-                // Add a placeholder image while loading
-                onLoadStart={() => setIsLoading(true)}
-                onLoad={() => setIsLoading(false)}
-            />
-            {isLoading && <Text style={styles.placeholderText}>Loading...</Text>}
-            <View style={styles.dressInfo}>
-                <Text style={styles.dressName}>{product.name}</Text>
-                <Text style={styles.dressDescription}>{product.description}</Text>
-                <Text style={styles.dressPrice}>${product.price}</Text>
-            </View>
-            
+                <Image
+                    source={getImageSource(product.image)}
+                    style={styles.dress}
+                    onError={handleError}
+                    // Add a placeholder image while loading
+                    onLoadStart={() => setIsLoading(true)}
+                    onLoad={() => setIsLoading(false)}
+                />
+                {isLoading && <Text style={styles.placeholderText}>Loading...</Text>}
+                <View style={styles.dressInfo}>
+                    <Text style={styles.dressName}>{product.name}</Text>
+                    <Text style={styles.dressDescription}>{product.description}</Text>
+                    <Text style={styles.dressPrice}>${product.price}</Text>
+                </View>
+                <TouchableOpacity onPress={() => addToCart(product)}>
+                    <Image source={require('../assets/Images/add_circle.png')} style={styles.addToCart} />
+                </TouchableOpacity>
             </View>
             );
         }
@@ -52,7 +76,8 @@ const getImageSource = (imagePath) => {
             return dress6;
         case '../assets/Images/dress7.png':
             return dress7;
-        // Add more cases for other images as needed
+        case '../assets/Images/dress3.png':
+            return dress3;
         default:
             return null;
     }
