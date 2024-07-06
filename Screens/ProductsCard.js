@@ -24,15 +24,7 @@ import dress7 from '../assets/Images/dress7.png';
             }
             };
             loadCart();
-        }, []);
-    
-        const handleAddToCart = async (product) => {
-            const newCart = [...cart, product];
-            setCart(newCart);
-            await AsyncStorage.setItem('cart', JSON.stringify(newCart));
-            addToCart(product);
-        };
-    
+        }, []);    
 
         return (
             <View style={styles.dressContainer}>
