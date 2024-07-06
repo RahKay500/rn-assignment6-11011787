@@ -76,7 +76,7 @@ const getImageSource = (imagePath) => {
             return dress6;
         case '../assets/Images/dress7.png':
             return dress7;
-        case '../assets/Images/dress3.png':
+        case '../assets/Images/dress8.png':
             return dress3;
         default:
             return null;
